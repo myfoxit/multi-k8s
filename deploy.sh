@@ -1,4 +1,3 @@
-#!/bin/bash
 
 docker build -t myfoxit/multi-client:latest -t myfoxit/multi-client:$SHA -f ./client/Dockerfile ./client
 docker build -t myfoxit/multi-server:latest -t myfoxit/multi-server:$SHA  -f ./server/Dockerfile ./server
