@@ -1,28 +1,30 @@
 sudo: required
-services:
-  - docker
 env:
-  global:
-    - SHA=$(git rev-parse HEAD)
-    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+    global:
+        - SHA= $(git rev-parse HEAD)
+        - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+services:
+    - docker
 before_install:
-  - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in service-account.json.enc -out service-account.json -d
-  - curl https://sdk.cloud.google.com | bash > /dev/null;
-  - source $HOME/google-cloud-sdk/path.bash.inc
-  - gcloud components update kubectl
-  - gcloud auth activate-service-account --key-file service-account.json
-  - gcloud config set project skilful-berm-214822
-  - gcloud config set compute/zone us-central1-a
-  - gcloud container clusters get-credentials multi-cluster
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker build -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
+    - openssl aes-256-cbc -K $encrypted_d8f392e673a0_key -iv $encrypted_d8f392e673a0_iv -in multi-k8s-277004-74cf792bc5cd.json.enc -out multi-k8s-277004-74cf792bc5cd.json -d
+    - curl https://sdk.cloud.google.com | bash > /dev/null;
+    - source $HOME/google-cloud-sdk/path.bash.inc
+    - gcloud components update kubectl
+    - gcloud auth activate-service-account --key-file multi-k8s-277004-74cf792bc5cd.json
+    - gcloud config set project multi-k8s-277004
+    - gcloud config set compute/zone us-central1-c
+    - gcloud container clusters get-credentials multi-cluster
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker build -t myfoxit/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run stephengrider/react-test npm test -- --coverage
+    - docker run -e CI=true myfoxit/docker-react npm run test
+
 
 deploy:
-  provider: script
-  script: bash ./deploy.sh
-  on:
-    branch: master
+    provider: script
+    script: bash ./deploy.sh
+    on:
+        branch: master
+        
     
