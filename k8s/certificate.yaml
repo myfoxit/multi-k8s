@@ -1,0 +1,21 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+    name: myfoxit-com-tls
+spec:
+    secretName: myfoxit-com
+    issuerRef:
+        name: letsencrypt-prod
+        kind: ClusterIssuer
+    commonName: myfoxit.com
+    dnsNames:
+        - myfoxit.com
+        - www.myfoxit.com
+    acme:
+        config:
+            - http01:
+                ingressClass: nginx
+              domains:
+                - myfoxit.com
+                - www.myfoxit.com
+            
